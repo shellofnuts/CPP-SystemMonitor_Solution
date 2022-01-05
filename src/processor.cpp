@@ -8,8 +8,8 @@
 using namespace LinuxParser;
 using std::vector, std::string, std::stof;
 
-// TODO: Return the aggregate CPU utilization
 float Processor::Utilization() {
+  // Returns CPU utilisation since cached values.
   vector<string> jiffies{CpuUtilization()};
   float total, active, idle, delta_total, delta_idle;
   idle = stof(jiffies[CPUStates::kIdle_]) + stof(jiffies[CPUStates::kIOwait_]);
