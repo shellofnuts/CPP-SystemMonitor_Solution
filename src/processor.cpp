@@ -5,7 +5,7 @@
 
 #include "linux_parser.h"
 
-using namespace LinuxParser;
+using LinuxParser::CpuUtilization, LinuxParser::CPUStates;
 using std::vector, std::string, std::stof;
 
 float Processor::Utilization() {

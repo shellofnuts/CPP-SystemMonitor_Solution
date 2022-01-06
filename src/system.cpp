@@ -11,7 +11,6 @@
 #include "process.h"
 #include "processor.h"
 
-
 using std::set;
 using std::size_t;
 using std::string;
@@ -28,21 +27,22 @@ System::System() {
   kernel_ = LinuxParser::Kernel();
 }
 
-// TODO: Return the system's CPU
 Processor& System::Cpu() {
   cpu_ = Processor();
   return cpu_;
 }
 
-// TODO: Return a container composed of the system's processes
-vector<Process>& System::Processes() { 
-    vector<int> pids = LinuxParser::Pids();
-    if (processes_.empty()) {
-        for (int i : pids){
-            processes_.push_back(Process(i));
-        }
+vector<Process>& System::Processes() {
+  vector<int> pids = LinuxParser::Pids();
+  for (int i : pids) {
+    // Only add processes that have all values.
+    Process tmp_proc(i);
+    if (std::count(processes_.begin(), processes_.end(), tmp_proc) == 0 && !tmp_proc.has_Null) {
+      processes_.emplace_back(tmp_proc);
     }
-    return processes_;
+  }
+  std::sort(processes_.begin(), processes_.end());
+  return processes_;
 }
 
 std::string System::Kernel() { return kernel_; }

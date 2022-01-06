@@ -8,22 +8,28 @@ It contains relevant attributes as shown below
 */
 class Process {
  public:
- Process(int pid) : _PID(pid) {};
-  int Pid() const;
+  Process(int pid) : _PID(pid) {
+      // Initiliase the class
+      User();
+      Command();
+      Ram();
+  };
+  int Pid();
   std::string User();
   std::string Command();
   float CpuUtilization();
   std::string Ram();
   long int UpTime();
-  bool operator<(Process const& a) const;
-
+  bool operator<(Process & a);
+  bool operator==(const Process &a) const;
+  bool has_Null{false};
 
  private:
- int const _PID;
- std::string _USER {}, _COMMAND {};
- std::string _RAM;
- float _CPU_UTIL;
- long int _UPTIME;
+  int _PID;
+  std::string _USER{}, _COMMAND{};
+  std::string _RAM;
+  float _CPU_UTIL;
+  long int _UPTIME;
 };
 
 #endif

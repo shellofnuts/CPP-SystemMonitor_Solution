@@ -121,7 +121,7 @@ long LinuxParser::ActiveJiffies(int pid) {
   int const utime{13}, stime{14}, cutime{15}, cstime{16};
 
   std::string line;
-  std::ifstream filestream(kProcDirectory + std::to_string(pid) + "/" +
+  std::ifstream filestream(kProcDirectory + std::to_string(pid) +
                            kStatFilename);
   if (filestream.is_open()) {
     std::getline(filestream, line);
@@ -246,7 +246,7 @@ string LinuxParser::Ram(int pid) {
       std::replace(line.begin(), line.end(), ':', ' ');
       std::istringstream linestream(line);
       linestream >> key >> value;
-      if (key == "VmSize") {
+      if (key == "VmRSS") {   // Using VmRSS instead of VmSize here as VmSize is the virtual memory size.
         memory = std::to_string(std::atol(value.c_str()) / 1000);
       }
     }
@@ -296,17 +296,18 @@ string LinuxParser::User(int pid) {
 
 long LinuxParser::UpTime(int pid) {
   long uptime{0};
-  string value, line;
+  int const starttime{21};
+  string line;
   std::ifstream filestream(kProcDirectory + std::to_string(pid) + "/stat");
 
   if (filestream.is_open()) {
     std::getline(filestream, line);
     std::istringstream linestream(line);
-    for (int i = 0; i < 22; i++) {
-      linestream >> value;
-    }
-    uptime = LinuxParser::UpTime() - std::atol(value.c_str()) / sysconf(_SC_CLK_TCK);
+    std::istream_iterator<std::string> begin(linestream);
+    std::istream_iterator<std::string> end;
+    std::vector<string> tmp_vec(begin, end);
+
+    uptime = LinuxParser::UpTime() - std::atol(tmp_vec[starttime].c_str()) / sysconf(_SC_CLK_TCK);
   }
-  
   return uptime;
 }
