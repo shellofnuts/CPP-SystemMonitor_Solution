@@ -6,6 +6,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <algorithm>
 
 #include "linux_parser.h"
 
@@ -37,7 +38,7 @@ string Process::Command() {
 
 string Process::Ram() {
   string memory = LinuxParser::Ram(_PID);
-  std::replace(memory, " ", "");
+  memory.erase(std::remove_if(memory.begin(), memory.end(), isspace), memory.end());  // Use erase-removeif method of removing any whitespace.
   if (memory.empty()) {
     has_Null = true;
   }
